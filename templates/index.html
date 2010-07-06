@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/css/main.css" />
+    <script src="/js/jquery.js"></script>
+    <script src="/js/util.js"></script>
+    <script src="/js/script.js"></script>
+    <script>
+        function updateChat() {
+	    downloadUrl("/getchats", "GET", null, onChatsReturned);
+	}
+	
+	function sendChat(form) {
+                history_add(document.getElementById("chattext").value);
+		var post = "content=" + encodeURIComponent(document.getElementById("chattext").value);
+                if(document.getElementById("chatlatex").checked)
+                	post += "&latex=true"
+    		downloadUrl("/getchats", "POST", post, onChatsReturned);
+		document.getElementById("chattext").value = "";
+	}
+
+	function onChatsReturned(responseText) {
+		document.getElementById("chats").innerHTML = responseText;
+                process_latex();
+		scrollToBottom();
+	}
+
+	function setup() {
+                setup_history();
+		window.setInterval("updateChat()", 5000);
+		updateChat();
+	}
+	
+	function scrollToBottom() {
+	  var chatDiv = document.getElementById("chats");
+	  chatDiv.scrollTop = chatDiv.scrollHeight;
+	}
+	</script>
+  </head>
+  <body onload="setup()">
+  	{% if user %}
+    	<div align="right">Logged in as {{ user.nickname }} - 
+    	  <a href="{{log_in_out_url}}">Log out</a> </div>
+   	{% else %}
+    	<div align="right"><a href="{{log_in_out_url}}">Log in</a></div>
+    {% endif %}
+
+    <div id="chats" style="padding:10px;background-color:white;width:90%;height:70%; overflow:auto;">
+	</div>
+	<br/>
+	<div>
+    <form action="javascript:sendChat();">
+      <div><label for="chattext">Text:</label><input name="content" type="text" id="chattext" size="100"></input>
+	<label for="chatlatex">Latex?</label><input name="latex" type="checkbox" id="chatlatex">
+      <input type="submit" value="Chat"></div>
+    </form>
+    </div>
+  </body>
+</html>

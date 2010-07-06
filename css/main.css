@@ -1,0 +1,10 @@
+body {
+  font-family: Verdana, Helvetica, sans-serif;
+  background-color: #DDDDDD;
+  line-height: 25px;
+}
+
+.latex {
+    display: inline;
+    vertical-align: middle;
+}
