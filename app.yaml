@@ -1,5 +1,5 @@
 application: latexchat
-version: 1
+version: 2
 runtime: python
 api_version: 1
 
@@ -8,5 +8,11 @@ handlers:
   static_dir: css
 - url: /js
   static_dir: js
+- url: /images
+  static_dir: images
 - url: /.*
   script: latexchat.py
+
+
+builtins:
+- datastore_admin: on

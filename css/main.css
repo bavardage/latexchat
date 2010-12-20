@@ -1,10 +1,65 @@
 body {
-  font-family: Verdana, Helvetica, sans-serif;
-  background-color: #DDDDDD;
-  line-height: 25px;
+    font-family: 'Crimson Text', serif;
+}
+
+#login {
+    float: right;
+    font-size: 20px;
+    border-radius: 5px;
+    -moz-border-radius: 5px; -webkit-border-radius: 5px;
+    border: 2px solid #333;
+}
+
+#login a {
+    display: inline-block;
+    padding: 2px;
+    text-decoration: none;
+    color: white;
+    background: #333;
+}
+
+#login a:hover {
+    background: #eee;
+    color: black;
+}
+
+#chats {
+    height: 65%;
+    overflow: auto;
+    border: 1px solid #333;
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+#chats.loading {
+    background: url('/images/loading.gif') center no-repeat;
+}
+
+#chats li {
+    line-height: 40px;
+    font-size: 30px;
+    padding-left: 0.5em;
+}
+
+#chats li:nth-child(odd) {
+    background-color: #eee;
+}
+
+#chats li span.author {
+    font-family: 'Just Me Again Down Here', arial, serif;
+    padding-right: 1em;
 }
 
 .latex {
     display: inline;
     vertical-align: middle;
+}
+
+form, input {
+    font-size: 30px;
+}
+
+#chattext {
+    width: 50%;
 }

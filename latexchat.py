@@ -10,6 +10,8 @@ from google.appengine.ext import db
 from google.appengine.ext.webapp import template
 from google.appengine.api import memcache
 
+from django.utils import simplejson as json
+
 # Set the debug level
 _DEBUG = True
 
@@ -79,7 +81,15 @@ class ChatsRequestHandler(BaseRequestHandler):
     template_values = {
       'greetings': greetings,
     }
-    return self.generate('chats.html', template_values)
+
+    to_serialise = [{'author': ({'nickname': g.author.nickname(),
+                                'email': g.author.email()} if g.author else None),
+                     'latex': g.latex,
+                     'content': g.content,
+                     'date': g.date.ctime()} for g in greetings]
+
+#    self.response.headers.add_header("Content-Type", 'application/json')
+    return self.response.out.write(json.dumps(to_serialise))
       
   def getChats(self, useCache=True):
     if useCache is False:
@@ -110,71 +120,12 @@ class ChatsRequestHandler(BaseRequestHandler):
     greeting.latex = bool(self.request.get('latex'))
     greeting.put()
     
-    self.getChats(False)
+    self.getChats(False) #invalidate the cache
 
-    
-# class EditUserProfileHandler(BaseRequestHandler):
-#   """This allows a user to edit his or her wiki profile.  The user can upload
-#      a picture and set a feed URL for personal data
-#   """
-#   def get(self, user):
-#     # Get the user information
-#     unescaped_user = urllib.unquote(user)
-#     greeting_user_object = users.User(unescaped_user)
-#     # Only that user can edit his or her profile
-#     if users.get_current_user() != greeting_user_object:
-#       self.redirect('/view/StartPage')
-
-#     greeting_user = GreetingUser.gql('WHERE greeting_user = :1', greeting_user_object).get()
-#     if not greeting_user:
-#       greeting_user = GreetingUser(greeting_user=greeting_user_object)
-#       greeting_user.put()
-
-#     self.generate('edit_user.html', template_values={'queried_user': greeting_user})
-
-#   def post(self, user):
-#     # Get the user information
-#     unescaped_user = urllib.unquote(user)
-#     greeting_user_object = users.User(unescaped_user)
-#     # Only that user can edit his or her profile
-#     if users.get_current_user() != greeting_user_object:
-#       self.redirect('/')
-
-#     greeting_user = GreetingUser.gql('WHERE greeting_user = :1', greeting_user_object).get()
-
-#     greeting_user.picture = self.request.get('user_picture')
-#     greeting_user.website = self.request.get('user_website')
-#     greeting_user.seated = self.request.get('user_seated')
-#     greeting_user.put()
-
-
-#     self.redirect('/user/%s' % user)
-    
-# class UserProfileHandler(BaseRequestHandler):
-#   """Allows a user to view another user's profile.  All users are able to
-#      view this information by requesting http://wikiapp.appspot.com/user/*
-#   """
-
-#   def get(self, user):
-#     """When requesting the URL, we find out that user's WikiUser information.
-#        We also retrieve articles written by the user
-#     """
-#     # Webob over quotes the request URI, so we have to unquote twice
-#     unescaped_user = urllib.unquote(urllib.unquote(user))
-
-#     # Query for the user information
-#     greeting_user_object = users.User(unescaped_user)
-#     greeting_user = GreetingUser.gql('WHERE greeting_user = :1', greeting_user_object).get()
-
-#     # Generate the user profile
-#     self.generate('user.html', template_values={'queried_user': greeting_user})
-
-                                                
+                                       
 application = webapp.WSGIApplication(
                                      [('/', MainRequestHandler),
                                       ('/getchats', ChatsRequestHandler)],
-#                                      ('/user/([^/]+)', UserProfileHandler)],
-#                                      ('/edituser/([^/]+)', EditUserProfileHandler)],
                                      debug=True)
 
 def main():
