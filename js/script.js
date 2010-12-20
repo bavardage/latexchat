@@ -7,6 +7,7 @@ function setup() {
 
   $('form').submit(function() {
     var form_data = $(this).serialize(); //get data string
+    history_add($('#chattext').val());
     $.ajax(
       {'url': '/getchats',
        'cache': false,
@@ -15,6 +16,7 @@ function setup() {
        'data': form_data,
        'success': update_chats
       });
+    $('#chattext').val('');
     return false;
   });
   $.getJSON("/getchats", function(data) {
@@ -31,7 +33,7 @@ function update_chats(data) {
     var content = e.content;
     if(e.latex) content = '<pre class="latex">' + content + '</pre>';
     chats += ("<li>" + author + content + "</li>");
-  });
+	 });
   $('#chats').html(chats);
   process_latex();
   scrollToBottom();
