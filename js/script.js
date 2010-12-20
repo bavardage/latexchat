@@ -38,8 +38,7 @@ function update_chats(data) {
 }
 
 function scrollToBottom() {
-  var chatDiv = document.getElementById("chats");
-  chatDiv.scrollTop = chatDiv.scrollHeight;
+  $("#chats").animate({ scrollTop: $("#chats").attr("scrollHeight") }, 1000);
 }
 
 function process_latex() {
