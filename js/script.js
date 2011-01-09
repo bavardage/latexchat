@@ -3,7 +3,7 @@ function setup() {
 
   window.setInterval(function() {
     $.getJSON("/getchats", update_chats);
-  }, 5000);
+  }, 10000);
 
   $('form').submit(function() {
     var form_data = $(this).serialize(); //get data string
