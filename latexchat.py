@@ -94,7 +94,7 @@ class ChatsRequestHandler(BaseRequestHandler):
   def getChats(self, useCache=True):
     if useCache is False:
       greetings = self.renderChats()
-      if not memcache.set("chat", greetings, 10):
+      if not memcache.set("chats", greetings, 10):
         logging.error("Memcache set failed:")
       return greetings
       
@@ -103,7 +103,7 @@ class ChatsRequestHandler(BaseRequestHandler):
       return greetings
     else:
       greetings = self.renderChats()
-      if not memcache.set("chat", greetings, 10):
+      if not memcache.set("chats", greetings, 10):
         logging.error("Memcache set failed:")
       return greetings
     
